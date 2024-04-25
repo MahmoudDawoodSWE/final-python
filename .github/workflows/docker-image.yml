@@ -1,0 +1,26 @@
+name: Docker Build and Push
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+jobs:
+  build-and-push:
+  
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+     
+      - name: Log in to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Build my python Docker image
+        run: docker build . -t mahmouddawood/python_img:${{ github.run_number }} -f dockerfile 
+        
+      - name: Push my python Docker image to Docker Hub
+        run: docker push mahmouddawood/python_img:${{ github.run_number }}
+
